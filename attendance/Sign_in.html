@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - DOIT Track</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --brand-red: #8B0000;
+            --brand-gold: #D4AF37;
+            --bg-cream: #FDFBF7;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-cream);
+            color: #1a1a1a;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .brand-bg-red { background-color: var(--brand-red); }
+        
+        .glass-card {
+            background: white;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            box-shadow: 0 20px 50px rgba(139, 0, 0, 0.05);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            background-color: #F9F7F2;
+            border: 1px solid #E5E7EB;
+            border-radius: 0.75rem;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            appearance: none;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--brand-red);
+            background-color: white;
+            box-shadow: 0 0 0 4px rgba(139, 0, 0, 0.05);
+        }
+
+        .role-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-view] { display: none; }
+        [data-view].active { display: flex; }
+
+        .select-wrapper::after {
+            content: '\f078';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 0.7rem;
+            position: absolute;
+            right: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="items-center justify-center p-6">
+
+    <!-- BRAND HEADER -->
+    <div class="fixed top-0 left-0 w-full p-8 flex justify-between items-center z-50">
+        <a href="Landingpage.html" class="flex items-center space-x-3 group">
+            <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg border-2 border-brand-red overflow-hidden transition-transform group-hover:scale-105">
+                <svg viewBox="0 0 100 100" class="w-10 h-10">
+                    <circle cx="50" cy="50" r="48" fill="#D4AF37" />
+                    <circle cx="50" cy="50" r="42" fill="#8B0000" />
+                    <path d="M50 20 L60 40 L80 40 L65 55 L70 75 L50 65 L30 75 L35 55 L20 40 L40 40 Z" fill="#D4AF37" />
+                    <text x="50" y="90" text-anchor="middle" fill="white" font-size="8" font-weight="bold">DOIT</text>
+                </svg>
+            </div>
+            <div class="flex flex-col">
+                <span class="font-extrabold text-slate-900 leading-none tracking-tight text-lg">DOIT Track</span>
+                <span class="text-[9px] uppercase tracking-[0.2em] text-brand-gold font-bold">Academic OS</span>
+            </div>
+        </a>
+        <a href="Landingpage.html" class="text-sm font-bold text-slate-400 hover:text-brand-red flex items-center gap-2 transition-all">
+            <i class="fas fa-arrow-left text-xs"></i> Back to site
+        </a>
+    </div>
+
+    <!-- SIGN UP CARD -->
+    <div id="signup-view" class="w-full max-w-[480px] glass-card rounded-[2.5rem] p-8 md:p-12 text-center relative mt-16 mb-16">
+        
+        <div class="inline-flex items-center gap-2 bg-[#FCF8ED] border border-[#F3EAD3] px-4 py-1.5 rounded-full mb-6">
+            <i class="fas fa-sparkles text-[#D4AF37] text-[10px]"></i>
+            <span class="text-[10px] font-bold text-[#D4AF37] uppercase tracking-[0.2em]">Join the ecosystem</span>
+        </div>
+        
+        <h1 class="text-3xl font-black text-slate-900 mb-2 tracking-tight">Create your account</h1>
+        <p class="text-slate-400 text-sm font-medium mb-8">Choose your role to get started</p>
+
+        <!-- Role Selector -->
+        <div class="flex p-1.5 bg-[#F9F7F2] rounded-2xl mb-8 border border-slate-100 relative">
+            <button id="student-btn" onclick="setRole('student')" class="role-btn flex-1 py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 brand-bg-red text-white shadow-xl shadow-red-900/20">
+                <i class="fas fa-graduation-cap"></i> Student
+            </button>
+            <button id="faculty-btn" onclick="setRole('faculty')" class="role-btn flex-1 py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 text-slate-400">
+                <i class="fas fa-user-shield"></i> Faculty
+            </button>
+        </div>
+
+        <!-- Form -->
+        <form class="space-y-4 text-left" onsubmit="event.preventDefault();">
+            <div class="space-y-1.5">
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Full Name</label>
+                <div class="relative group">
+                    <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand-red transition-colors"></i>
+                    <input type="text" placeholder="John Doe" class="form-input">
+                </div>
+            </div>
+
+            <div class="space-y-1.5">
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1"><span id="id-label">Student</span> ID / Roll No.</label>
+                <div class="relative group">
+                    <i class="fas fa-id-card absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand-red transition-colors"></i>
+                    <input type="text" placeholder="e.g. DOIT-2024-001" class="form-input">
+                </div>
+            </div>
+
+            <div class="space-y-1.5">
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Department</label>
+                <div class="relative group select-wrapper">
+                    <i class="fas fa-building absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand-red transition-colors z-10"></i>
+                    <select class="form-input cursor-pointer">
+                        <option value="" disabled selected>Select Department</option>
+                        <option value="BEED">BEED</option>
+                        <option value="BSED-Math">BSED-Math</option>
+                        <option value="BSED-English">BSED-English</option>
+                        <option value="BSIT">BSIT</option>
+                        <option value="BSCS">BSCS</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="space-y-1.5">
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Official Email</label>
+                <div class="relative group">
+                    <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand-red transition-colors"></i>
+                    <input type="email" placeholder="name@doitcollege.edu" class="form-input">
+                </div>
+            </div>
+
+            <div class="space-y-1.5">
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Create Password</label>
+                <div class="relative group">
+                    <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand-red transition-colors"></i>
+                    <input type="password" id="signup-pass" placeholder="••••••••" class="form-input">
+                    <button type="button" onclick="togglePass()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500">
+                        <i id="eye-icon" class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button class="w-full brand-bg-red text-white py-4 rounded-2xl font-extrabold text-lg shadow-2xl shadow-red-900/30 hover:-translate-y-0.5 active:translate-y-0 transition-all mt-6">
+                Create <span id="submit-label">Student</span> Account
+            </button>
+        </form>
+
+        <p class="mt-8 text-sm font-medium text-slate-400">
+            Already have an account? <a href="Login.html" class="text-brand-red font-bold hover:underline">Log in</a>
+        </p>
+    </div>
+
+    <div class="fixed bottom-6 text-[10px] font-bold text-slate-300 uppercase tracking-[0.3em] w-full text-center">
+        © 2026 DOIT Track • Academic Operating System
+    </div>
+
+    <script>
+        function setRole(role) {
+            const sBtn = document.getElementById('student-btn');
+            const fBtn = document.getElementById('faculty-btn');
+            const submitLabel = document.getElementById('submit-label');
+            const idLabel = document.getElementById('id-label');
+            
+            if(role === 'student') {
+                sBtn.className = "role-btn flex-1 py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 brand-bg-red text-white shadow-xl shadow-red-900/20";
+                fBtn.className = "role-btn flex-1 py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 text-slate-400";
+                submitLabel.innerText = "Student";
+                idLabel.innerText = "Student";
+            } else {
+                fBtn.className = "role-btn flex-1 py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 brand-bg-red text-white shadow-xl shadow-red-900/20";
+                sBtn.className = "role-btn flex-1 py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 text-slate-400";
+                submitLabel.innerText = "Faculty";
+                idLabel.innerText = "Faculty";
+            }
+        }
+
+        function togglePass() {
+            const input = document.getElementById('signup-pass');
+            const icon = document.getElementById('eye-icon');
+            if(input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+    </script>
+</body>
+</html>

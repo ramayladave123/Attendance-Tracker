@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOIT Track Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .bg-cream { background-color: #FDF6F0; }
+        .bg-maroon { background-color: #8B0000; }
+        .text-maroon { color: #8B0000; }
+        .border-maroon { border-color: #8B0000; }
+        .bg-gold { background-color: #D4AF37; }
+        .text-gold { color: #D4AF37; }
+        .border-gold { border-color: #D4AF37; }
+        .input-cream { background-color: #FAF7F2; }
+        
+        @keyframes scan-line {
+            0% { top: 0%; }
+            50% { top: 100%; }
+            100% { top: 0%; }
+        }
+        .scan-animation {
+            animation: scan-line 3s ease-in-out infinite;
+        }
+
+        .hash-font { font-family: 'Courier New', Courier, monospace; }
+        
+        /* Smooth transitions for tracking states */
+        #trackingSurface { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+    </style>
+</head>
+<body class="bg-cream text-[#2D2D2D] min-h-screen">
+
+    <!-- Header -->
+    <header class="flex items-center justify-between px-8 py-4 bg-white/50 backdrop-blur-sm border-b border-[#EADAC9]">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-maroon rounded-xl flex items-center justify-center shadow-lg shadow-[#8B0000]/20">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3"/><path d="M7 12h10"/></svg>
+            </div>
+            <div>
+                <h1 class="font-bold text-xl tracking-tight flex items-center gap-1">
+                    DOIT <span class="text-gold">Track</span>
+                </h1>
+                <div class="flex items-center gap-2">
+                    <p class="text-[10px] uppercase tracking-[0.2em] font-semibold text-[#8B0000]/60 -mt-1">
+                        Academic OS
+                    </p>
+                    <span class="text-[8px] bg-green-100 text-green-700 px-1 rounded font-bold uppercase tracking-tighter">Blockchain Verified</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-6">
+            <div class="flex items-center gap-2 px-3 py-1 bg-[#FDE7AD] text-[#856404] rounded-full text-xs font-bold border border-[#EADAC9]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                Faculty
+            </div>
+            <!-- SIGN OUT BUTTON UPDATED TO SHOW MODAL -->
+            <button onclick="showSignOutModal()" class="flex items-center gap-2 text-sm font-medium hover:text-maroon transition-colors group">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:-translate-x-1 transition-transform"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                Sign out
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-[1400px] mx-auto p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Left Column: Tracking Console -->
+        <section class="lg:col-span-7 bg-white rounded-3xl p-8 shadow-sm border border-[#EADAC9]/50">
+            <div class="mb-6">
+                <label class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block">
+                    Active Event Session
+                </label>
+                <div class="flex gap-3">
+                    <div class="relative flex-1">
+                        <select id="eventSelector" class="w-full appearance-none bg-white border border-[#EADAC9] rounded-xl px-4 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 focus:border-gold transition-all cursor-pointer">
+                            <option value="" disabled selected>Select event to start tracking</option>
+                            <option>Computer Science Seminar</option>
+                            <option>Engineering Workshop</option>
+                            <option>Freshman Orientation</option>
+                            <option>Career Fair 2024</option>
+                        </select>
+                        <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                        </div>
+                    </div>
+                    <button id="openModalBtn" class="flex items-center gap-2 px-6 py-3 border border-gold text-gold font-semibold rounded-xl hover:bg-[#D4AF37]/5 transition-all whitespace-nowrap">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                        New Event
+                    </button>
+                </div>
+            </div>
+
+            <div id="trackingSurface" class="relative aspect-[16/10] rounded-2xl overflow-hidden bg-maroon flex flex-col items-center justify-center text-white p-8">
+                <!-- Ready State UI -->
+                <div id="readyState" class="flex flex-col items-center text-center max-w-md">
+                    <div class="mb-6 p-5 bg-white/10 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white/80"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v-1s0-1-1-1h-1"/><path d="M11 21H7"/><path d="M7 11V7"/><path d="M11 7h4"/><path d="M14 14h-2a2 2 0 0 0-2 2v2"/><rect width="5" height="5" x="16" y="16" rx="1"/><path d="M12 12h.01"/><path d="M16 12h.01"/><path d="M12 16h.01"/></svg>
+                    </div>
+                    <h2 class="text-2xl font-bold mb-2">Ready to Track</h2>
+                    <p class="text-white/70 mb-10 text-sm">Select an event and click start to begin logging student attendance. Each scan is cryptographically secured on a local ledger.</p>
+                    <button id="startTrackingBtn" disabled class="font-bold py-4 px-12 rounded-2xl shadow-xl transition-all transform hover:scale-105 active:scale-95 bg-gray-400 cursor-not-allowed opacity-50">
+                        Start Secure Tracking
+                    </button>
+                </div>
+
+                <!-- Active State UI -->
+                <div id="activeState" class="hidden absolute inset-0 flex flex-col items-center justify-center text-center z-10">
+                    <div class="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
+                    <div class="relative z-10 flex flex-col items-center">
+                        <div class="w-48 h-48 mb-6 border-2 border-[#D4AF37]/30 rounded-3xl flex items-center justify-center relative bg-white/5 overflow-hidden">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-80"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v-1s0-1-1-1h-1"/><path d="M11 21H7"/><path d="M7 11V7"/><path d="M11 7h4"/><path d="M14 14h-2a2 2 0 0 0-2 2v2"/><rect width="5" height="5" x="16" y="16" rx="1"/></svg>
+                            <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-gold -translate-x-1 -translate-y-1"></div>
+                            <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-gold translate-x-1 -translate-y-1"></div>
+                            <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-gold -translate-x-1 translate-y-1"></div>
+                            <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-gold translate-x-1 translate-y-1"></div>
+                            <div class="absolute inset-x-0 h-1 bg-gold shadow-[0_0_15px_#D4AF37] scan-animation"></div>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Immutable Tracking Active</h3>
+                        <p class="text-white/60 text-sm max-w-xs mb-8">System is hashing incoming credentials into the attendance blockchain.</p>
+                        <button id="stopTrackingBtn" class="bg-white/10 hover:bg-white/20 text-white font-bold py-3 px-8 rounded-xl border border-white/20 transition-all">
+                            Finalize Ledger
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Column: Live Scan Log -->
+        <section class="lg:col-span-5 bg-white rounded-3xl p-8 shadow-sm border border-[#EADAC9]/50 flex flex-col h-full min-h-[600px]">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold flex items-center gap-2">
+                    Verified Ledger
+                    <span id="logPulse" class="hidden h-2 w-2 rounded-full bg-green-500"></span>
+                </h3>
+                <div class="text-[10px] text-gray-400 font-mono" id="lastHashDisplay">Genesis: 00000000...</div>
+            </div>
+
+            <div id="logContainer" class="flex-1 border-2 border-dashed border-[#EADAC9] rounded-2xl flex flex-col overflow-hidden items-center justify-center text-center p-8">
+                <div id="emptyLogState" class="text-gray-400">
+                    <p class="text-sm">Attendance blocks will appear here as students scan in.</p>
+                </div>
+                <div id="logList" class="hidden w-full overflow-y-auto p-4 space-y-4 text-left self-start">
+                    <!-- Scan items injected here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Create Event Modal Backdrop -->
+    <div id="modalBackdrop" class="hidden fixed inset-0 bg-[#2D2D2D]/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <!-- New Event Modal -->
+        <div class="bg-[#FDFBF9] rounded-[2rem] max-w-xl w-full shadow-2xl relative overflow-hidden border border-[#EADAC9]">
+            <div class="flex items-center justify-between p-6 pb-2">
+                <div class="flex items-center gap-2 text-maroon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    <h2 class="text-lg font-bold">Create DOIT Event</h2>
+                </div>
+                <button id="closeModalBtn" class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+            </div>
+
+            <form id="createEventForm" class="p-8 pt-4 space-y-5">
+                <div>
+                    <label class="text-xs font-bold text-[#2D2D2D] mb-2 block">Title</label>
+                    <input 
+                        type="text" 
+                        id="eventTitle"
+                        required
+                        placeholder="TechFest Hackathon" 
+                        class="w-full input-cream border-2 border-maroon/10 rounded-2xl px-5 py-3 focus:outline-none focus:border-maroon focus:ring-1 focus:ring-maroon transition-all placeholder:text-gray-300"
+                    />
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs font-bold text-[#2D2D2D] mb-2 block">Category</label>
+                        <div class="relative">
+                            <select id="eventCategory" class="w-full appearance-none input-cream border border-[#EADAC9] rounded-2xl px-5 py-3 pr-10 focus:outline-none focus:border-gold transition-all">
+                                <option>Academic</option>
+                                <option>Workshop</option>
+                                <option>Seminar</option>
+                                <option>Social</option>
+                            </select>
+                            <div class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#2D2D2D] mb-2 block">Venue</label>
+                        <input 
+                            type="text" 
+                            id="eventVenue"
+                            placeholder="Main Auditorium" 
+                            class="w-full input-cream border border-[#EADAC9] rounded-2xl px-5 py-3 focus:outline-none focus:border-gold transition-all placeholder:text-gray-300"
+                        />
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-[#2D2D2D] mb-2 block">Starts At</label>
+                    <input 
+                        type="datetime-local" 
+                        id="eventStartsAt"
+                        class="w-full input-cream border border-[#EADAC9] rounded-2xl px-5 py-3 focus:outline-none focus:border-gold transition-all"
+                    />
+                </div>
+                <div class="flex justify-end pt-4">
+                    <button 
+                        type="submit" 
+                        class="bg-maroon hover:bg-[#700000] text-white font-bold py-3 px-8 rounded-2xl shadow-lg shadow-[#8B0000]/20 transition-all transform hover:scale-105 active:scale-95"
+                    >
+                        Create Event
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sign Out Confirmation Modal -->
+    <div id="signOutModal" class="hidden fixed inset-0 bg-[#2D2D2D]/60 backdrop-blur-sm flex items-center justify-center p-4 z-[60]">
+        <div class="bg-white rounded-[2rem] max-w-sm w-full shadow-2xl p-8 border border-[#EADAC9] text-center">
+            <div class="w-16 h-16 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Sign Out?</h3>
+            <p class="text-gray-500 text-sm mb-8">Are you sure you want to end your session? Active tracking will be stopped.</p>
+            <div class="flex gap-3">
+                <button onclick="hideSignOutModal()" class="flex-1 px-6 py-3 border border-gray-200 text-gray-600 font-bold rounded-xl hover:bg-gray-50 transition-all">
+                    No, stay
+                </button>
+                <button onclick="signOut()" class="flex-1 px-6 py-3 bg-maroon text-white font-bold rounded-xl hover:bg-[#700000] shadow-lg shadow-maroon/20 transition-all transform hover:scale-105 active:scale-95">
+                    Yes, sign out
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /** * LITE BLOCKCHAIN LOGIC
+         * We use a simple SHA-256 simulation to chain blocks.
+         */
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Navigation & Confirmation
+        function showSignOutModal() {
+            document.getElementById('signOutModal').classList.remove('hidden');
+        }
+
+        function hideSignOutModal() {
+            document.getElementById('signOutModal').classList.add('hidden');
+        }
+
+        function signOut() {
+            window.location.href = 'Landingpage.html';
+        }
+
+        // State Management
+        let isTracking = false;
+        let chain = []; // Our "Blockchain"
+        let lastHash = "0000000000000000000000000000000000000000000000000000000000000000";
+        let simulationTimeout = null;
+
+        // Elements
+        const eventSelector = document.getElementById('eventSelector');
+        const startTrackingBtn = document.getElementById('startTrackingBtn');
+        const stopTrackingBtn = document.getElementById('stopTrackingBtn');
+        const trackingSurface = document.getElementById('trackingSurface');
+        const readyState = document.getElementById('readyState');
+        const activeState = document.getElementById('activeState');
+        const logPulse = document.getElementById('logPulse');
+        const logContainer = document.getElementById('logContainer');
+        const emptyLogState = document.getElementById('emptyLogState');
+        const logList = document.getElementById('logList');
+        const lastHashDisplay = document.getElementById('lastHashDisplay');
+        
+        const modalBackdrop = document.getElementById('modalBackdrop');
+        const openModalBtn = document.getElementById('openModalBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const createEventForm = document.getElementById('createEventForm');
+
+        // Event Listeners
+        eventSelector.addEventListener('change', () => {
+            if (eventSelector.value) {
+                startTrackingBtn.disabled = false;
+                startTrackingBtn.classList.remove('bg-gray-400', 'opacity-50', 'cursor-not-allowed');
+                startTrackingBtn.classList.add('bg-gold', 'hover:bg-[#C19A2E]', 'text-[#2D2D2D]', 'shadow-black/20');
+            }
+        });
+
+        startTrackingBtn.addEventListener('click', startSession);
+        stopTrackingBtn.addEventListener('click', stopSession);
+        openModalBtn.addEventListener('click', () => modalBackdrop.classList.remove('hidden'));
+        closeModalBtn.addEventListener('click', () => modalBackdrop.classList.add('hidden'));
+
+        createEventForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = document.getElementById('eventTitle').value;
+            
+            const option = document.createElement('option');
+            option.text = title;
+            option.value = title;
+            eventSelector.add(option);
+            eventSelector.value = title;
+            
+            startTrackingBtn.disabled = false;
+            startTrackingBtn.classList.remove('bg-gray-400', 'opacity-50', 'cursor-not-allowed');
+            startTrackingBtn.classList.add('bg-gold', 'hover:bg-[#C19A2E]', 'text-[#2D2D2D]', 'shadow-black/20');
+            
+            createEventForm.reset();
+            modalBackdrop.classList.add('hidden');
+        });
+
+        function startSession() {
+            isTracking = true;
+            readyState.classList.add('hidden');
+            activeState.classList.remove('hidden');
+            trackingSurface.classList.add('ring-4', 'ring-gold');
+            logPulse.classList.remove('hidden');
+            logPulse.classList.add('animate-pulse');
+
+            scheduleSimulation();
+        }
+
+        function stopSession() {
+            isTracking = false;
+            readyState.classList.remove('hidden');
+            activeState.classList.add('hidden');
+            trackingSurface.classList.remove('ring-4', 'ring-gold');
+            logPulse.classList.add('hidden');
+            logPulse.classList.remove('animate-pulse');
+            
+            if (simulationTimeout) clearTimeout(simulationTimeout);
+        }
+
+        async function handleNewScan(name, studentId) {
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            // Block Data
+            const dataString = `${name}${studentId}${time}${lastHash}`;
+            const newHash = await sha256(dataString);
+            
+            const block = {
+                id: Date.now(),
+                name,
+                studentId,
+                time,
+                hash: newHash,
+                prevHash: lastHash
+            };
+            
+            lastHash = newHash;
+            lastHashDisplay.innerText = `Head: ${newHash.substring(0, 12)}...`;
+            
+            chain = [block, ...chain];
+            renderScans();
+        }
+
+        function renderScans() {
+            if (chain.length > 0) {
+                emptyLogState.classList.add('hidden');
+                logContainer.classList.remove('items-center', 'justify-center', 'text-center');
+                logList.classList.remove('hidden');
+            }
+
+            logList.innerHTML = chain.map(block => `
+                <div class="relative group">
+                    <!-- Blockchain Link Line -->
+                    <div class="absolute left-6 -bottom-4 w-0.5 h-4 bg-[#EADAC9]/50 group-last:hidden"></div>
+                    
+                    <div class="flex items-center gap-4 bg-white p-4 rounded-xl border border-[#EADAC9] shadow-sm animate-in slide-in-from-right transition-all">
+                        <div class="w-12 h-12 bg-maroon text-white rounded-full flex items-center justify-center shrink-0 shadow-inner">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <div class="flex-1 overflow-hidden">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-bold text-sm">${block.name}</h4>
+                                <span class="text-[10px] text-gray-400 flex items-center gap-1 font-medium">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    ${block.time}
+                                </span>
+                            </div>
+                            <p class="text-xs text-gray-500">ID: ${block.studentId}</p>
+                            
+                            <div class="mt-2 flex items-center gap-2">
+                                <div class="px-2 py-0.5 bg-gray-50 border border-gray-100 rounded text-[9px] text-gray-400 hash-font truncate">
+                                    PREV: ${block.prevHash.substring(0, 16)}...
+                                </div>
+                                <div class="px-2 py-0.5 bg-green-50 border border-green-100 rounded text-[9px] text-green-600 hash-font truncate">
+                                    HASH: ${block.hash.substring(0, 16)}...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function scheduleSimulation() {
+            if (!isTracking) return;
+            
+            simulationTimeout = setTimeout(() => {
+                const names = ["Alex Rivera", "Jordan Smith", "Sam Taylor", "Casey Morgan", "Taylor Reed"];
+                const ids = ["U772109", "U812443", "U901234", "U123456", "U654321"];
+                const randomIndex = Math.floor(Math.random() * names.length);
+                
+                handleNewScan(names[randomIndex], ids[randomIndex]);
+                scheduleSimulation();
+            }, 4000);
+        }
+    </script>
+</body>
+</html>

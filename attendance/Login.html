@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - DOIT Track Academic OS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --brand-red: #8B0000;
+            --brand-gold: #D4AF37;
+            --bg-cream: #FDFBF7;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-cream);
+            color: #1a1a1a;
+            overflow-x: hidden;
+        }
+
+        .brand-text-red { color: var(--brand-red); }
+        .brand-bg-red { background-color: var(--brand-red); }
+        
+        .glass-card {
+            background: white;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            box-shadow: 0 20px 50px rgba(139, 0, 0, 0.05);
+        }
+
+        .role-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 3rem;
+            background-color: #F9F7F2;
+            border: 1px solid #E5E7EB;
+            border-radius: 0.75rem;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--brand-red);
+            background-color: white;
+            box-shadow: 0 0 0 4px rgba(139, 0, 0, 0.05);
+        }
+
+        #error-message {
+            display: none;
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <div id="signin-view" class="min-h-screen w-full flex flex-col items-center justify-center p-6 relative">
+        
+        <!-- Header / Nav area -->
+        <div class="absolute top-0 left-0 w-full p-8 flex justify-between items-center">
+            <a href="Landingpage.html" class="flex items-center space-x-3 group">
+                <div class="w-10 h-10 bg-brand-red rounded-xl flex items-center justify-center shadow-lg shadow-red-900/20 overflow-hidden transition-transform group-hover:scale-105">
+                    <i class="fas fa-expand text-white text-lg"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-extrabold text-slate-900 leading-none tracking-tight text-lg">DOIT Track</span>
+                    <span class="text-[9px] uppercase tracking-[0.2em] text-brand-gold font-bold">Academic OS</span>
+                </div>
+            </a>
+            <a href="Landingpage.html" class="text-sm font-bold text-slate-400 hover:text-brand-red flex items-center gap-2 transition-all">
+                <i class="fas fa-arrow-left text-xs"></i> Back to site
+            </a>
+        </div>
+
+        <!-- Main Card -->
+        <div class="w-full max-w-[480px] glass-card rounded-[2.5rem] p-10 md:p-14 text-center relative mt-12">
+            
+            <div class="inline-flex items-center gap-2 bg-[#FCF8ED] border border-[#F3EAD3] px-4 py-1.5 rounded-full mb-8">
+                <i class="fas fa-lock text-[#D4AF37] text-[10px]"></i>
+                <span class="text-[10px] font-bold text-[#D4AF37] uppercase tracking-[0.2em]">Secure Access</span>
+            </div>
+            
+            <h1 class="text-4xl font-black text-slate-900 mb-3 tracking-tight">Sign in to DOIT Track</h1>
+            <p class="text-slate-400 text-sm font-medium mb-10">Choose your role to continue</p>
+
+            <!-- Error Message -->
+            <div id="error-message" class="mb-6 p-4 bg-red-50 border border-red-100 rounded-2xl flex items-center gap-3 text-left">
+                <i class="fas fa-exclamation-circle text-red-500"></i>
+                <p class="text-xs font-bold text-red-600" id="error-text">Invalid credentials or role mismatch.</p>
+            </div>
+
+            <!-- Role Selector -->
+            <div class="flex p-1.5 bg-[#F9F7F2] rounded-2xl mb-10 border border-slate-100 relative">
+                <button id="btn-student" onclick="toggleRole('student')" class="role-btn flex-1 py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 brand-bg-red text-white shadow-xl shadow-red-900/20">
+                    <i class="fas fa-graduation-cap"></i> Student
+                </button>
+                <button id="btn-faculty" onclick="toggleRole('faculty')" class="role-btn flex-1 py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 text-slate-400">
+                    <i class="fas fa-user-shield"></i> Faculty
+                </button>
+            </div>
+
+            <!-- Form -->
+            <form class="space-y-6 text-left" id="loginForm">
+                <div class="space-y-2">
+                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Official Email</label>
+                    <div class="relative group">
+                        <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand-red transition-colors"></i>
+                        <input type="email" id="email-field" required placeholder="name@doit.edu" class="form-input">
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Password</label>
+                    <div class="relative group">
+                        <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand-red transition-colors"></i>
+                        <input type="password" id="password-field" required placeholder="••••••••" class="form-input">
+                        <button type="button" onclick="togglePassword()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500 transition-colors">
+                            <i class="fas fa-eye" id="password-toggle-icon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full brand-bg-red text-white py-4.5 rounded-2xl font-extrabold text-lg shadow-2xl shadow-red-900/30 hover:-translate-y-0.5 active:translate-y-0.5 transition-all mt-4">
+                    Sign in as <span id="submit-label">Student</span>
+                </button>
+            </form>
+
+            <div class="mt-10 p-5 bg-[#FDFBF7] border border-dashed border-[#E5E7EB] rounded-2xl flex items-start gap-4 text-left">
+                <div class="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center shrink-0">
+                    <i class="fas fa-shield-check text-brand-red text-sm"></i>
+                </div>
+                <p class="text-[11px] text-slate-500 font-medium leading-relaxed">
+                    Students get a unique QR. Faculty scan it at events to mark you present. Use your institutional email to access the system.
+                </p>
+            </div>
+
+            <p class="mt-12 text-sm font-medium text-slate-400">
+                New to DOIT Track? <a href="Sign_in.html" class="text-brand-red font-bold hover:underline">Create an account</a>
+            </p>
+        </div>
+
+        <div class="mt-12 text-[10px] font-bold text-slate-300 uppercase tracking-[0.3em]">
+            © 2026 DOIT Track • Academic Operating System
+        </div>
+    </div>
+
+    <script>
+        let currentRole = 'student';
+
+        function toggleRole(role) {
+            currentRole = role;
+            const studentBtn = document.getElementById('btn-student');
+            const facultyBtn = document.getElementById('btn-faculty');
+            const label = document.getElementById('submit-label');
+            const emailField = document.getElementById('email-field');
+            
+            if (role === 'student') {
+                studentBtn.className = "role-btn flex-1 py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 brand-bg-red text-white shadow-xl shadow-red-900/20";
+                facultyBtn.className = "role-btn flex-1 py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 text-slate-400";
+                label.innerText = "Student";
+                emailField.placeholder = "student@doit.edu";
+            } else {
+                facultyBtn.className = "role-btn flex-1 py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 brand-bg-red text-white shadow-xl shadow-red-900/20";
+                studentBtn.className = "role-btn flex-1 py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 text-slate-400";
+                label.innerText = "Faculty";
+                emailField.placeholder = "faculty@doit.edu";
+            }
+        }
+
+        function togglePassword() {
+            const field = document.getElementById('password-field');
+            const icon = document.getElementById('password-toggle-icon');
+            if (field.type === 'password') {
+                field.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                field.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+
+        // Login Logic
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email-field').value.toLowerCase();
+            const password = document.getElementById('password-field').value;
+            const errorMsg = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+
+            // Simple Role Verification Logic
+            // In a real app, this would be a database check
+            const isFacultyEmail = email.includes('faculty'); 
+            
+            if (currentRole === 'faculty') {
+                if (!isFacultyEmail) {
+                    showError("Access Denied: Use a faculty account for this role.");
+                    return;
+                }
+                // Simulate verification success
+                window.location.href = "Faculty.html";
+            } else {
+                if (isFacultyEmail) {
+                    showError("Access Denied: Faculty accounts cannot log in as students.");
+                    return;
+                }
+                // Simulate verification success
+                window.location.href = "Student.html";
+            }
+        });
+
+        function showError(text) {
+            const errorMsg = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+            errorText.innerText = text;
+            errorMsg.style.display = 'flex';
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                errorMsg.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
